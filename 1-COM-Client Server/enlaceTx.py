@@ -1,18 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#####################################################
-# Camada Física da Computação
-# Prof. Rafael Corsi
-#  Abril/2017
-#  Camada de Enlace
-####################################################
-
-# Importa pacote de tempo
 import time
 
 # Threads
 import threading
-from empacota import Empacota
 
 # Class
 class TX(object):
@@ -52,7 +41,6 @@ class TX(object):
 
     def threadPause(self):
         """ Stops the TX thread to run
-
         This must be used when manipulating the tx buffer
         """
         self.threadMutex = False
@@ -65,7 +53,6 @@ class TX(object):
     def sendBuffer(self, data):
         """ Write a new data to the transmission buffer.
             This function is non blocked.
-
         This function must be called only after the end
         of transmission, this erase all content of the buffer
         in order to save the new value.

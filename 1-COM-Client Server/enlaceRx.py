@@ -1,19 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#####################################################
-# Camada Física da Computação
-# Prof. Rafael Corsi
-#  Abril/2017
-#  Camada de Enlace
-####################################################
-
-# Importa pacote de tempo
 import time
 
 # Threads
 import threading
-
-import binascii
 
 # Class
 class RX(object):
@@ -22,14 +10,13 @@ class RX(object):
     """
 
     def __init__(self, fisica):
-        """ Initializes the RX class
+        """ Initializes the TX class
         """
         self.fisica      = fisica
         self.buffer      = bytes(bytearray())
-        self.threadStop  = False
+        self.thre   adStop  = False
         self.threadMutex = True
         self.READLEN     = 1024
-        self.pay       =False
 
     def thread(self):
         """ RX thread, to send data in parallel with the code
@@ -39,7 +26,7 @@ class RX(object):
                 rxTemp, nRx = self.fisica.read(self.READLEN)
                 if (nRx > 0):
                     self.buffer += rxTemp
-                print(':', self.buffer)
+                print(self.buffer)
                 time.sleep(0.001)
 
     def threadStart(self):
@@ -55,7 +42,6 @@ class RX(object):
 
     def threadPause(self):
         """ Stops the RX thread to run
-
         This must be used when manipulating the Rx buffer
         """
         self.threadMutex = False
@@ -98,7 +84,6 @@ class RX(object):
 
     def getNData(self, size):
         """ Read N bytes of data from the reception buffer
-
         This function blocks until the number of bytes is received
         """
         while(self.getBufferLen() < size):
@@ -111,15 +96,3 @@ class RX(object):
         """ Clear the reception buffer
         """
         self.buffer = b""
-    
-    
-    def getHeadPayload(self):
-        # Procura o EOP no final e retorna tudo antes dele.
-        while(self.pay ==  False):
-            eop = self.buffer.find(b'\xFF\xFC\xF4\xF7')
-            if (eop != -1):
-                self.threadPause()
-                headpayload = self.buffer[:eop]
-                self.buffer = self.buffer[eop+4:]
-                self.threadResume()
-                return headpayload
