@@ -11,6 +11,7 @@ from interfaceFisica import fisica
 # enlace Tx e Rx
 from enlaceRx import RX
 from enlaceTx import TX
+from pacote import *
 
 class enlace(object):
     """ This class implements methods to the interface between Enlace and Application
@@ -45,11 +46,75 @@ class enlace(object):
     def sendData(self, data):
         """ Send data over the enlace interface
         """
+        data = Pacote(data, "data").empacota()
         self.tx.sendBuffer(data)
 
     def getData(self, size):
         """ Get n data over the enlace interface
         Return the byte array and the size of the buffer
         """
-        data = self.rx.getNData(size)
-        return(data, len(data))
+        package = self.rx.getHead()
+        print(package, "enlace,57")
+        data = desempacota(package)
+        return(data[0], data[1],(len(data[0])),data[2])
+
+    def sendACK(self):
+        package = Package(None,"ACK").buildPackage()
+        self.tx.sendBuffer(package)
+    
+    def sendNACK(self):
+        package = Package(None,"NACK").buildPackage()
+        self.tx.sendBuffer(package)
+    
+    def sendSync(self):
+        package = Package(None,"sync").buildPackage()
+        self.tx.sendBuffer(package)
+
+
+
+    def waitConnection(self):
+        while self.connected ==  False:
+            response = self.getData()
+            print("Waiting sync...")
+            if response[3] == "sync":
+                print("Sync received")
+                self.sendSync()
+                time.sleep(0.5)
+                self.sendACK()
+                print("ACK SENT")
+                response = self.getData()
+                if response[3] == "ACK":
+                    print("Ready to receive package")
+                    return True
+            else:
+                return False
+
+        
+    def establishConnection(self):
+        timeout = False
+        print("Waiting sync...")
+        comeco = time.time()
+        while self.connected ==  False:
+            if timeout:
+                timeout=False
+                comeco = time.time()
+                print("--Waiting sync...")
+                if self.rx.getIsEmpty() == False:
+                    self.sendSync()
+                    response = self.getData()
+                    if response[3] == "ACK" or "sync":
+                        print("Sync received")
+                        response = self.getData()
+                        if response[3] == "sync" or "ACK":
+                            print("ACK received")
+                            time.sleep(0.5)
+                            self.sendACK()
+                            return True
+                    else:
+                        return False      
+            else:
+                if ((time.time() - comeco) > 3):
+                    print ("Passou 3 s")
+                    self.sendSync()
+                    timeout = True
+                    

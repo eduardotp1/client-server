@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 import time
-
+import binascii
 # Threads
 import threading
 
@@ -17,6 +18,7 @@ class RX(object):
         self.threadStop  = False
         self.threadMutex = True
         self.READLEN     = 1024
+        self.pay = False
 
     def thread(self):
         """ RX thread, to send data in parallel with the code
@@ -26,7 +28,7 @@ class RX(object):
                 rxTemp, nRx = self.fisica.read(self.READLEN)
                 if (nRx > 0):
                     self.buffer += rxTemp
-                print(self.buffer)
+                print(binascii.hexlify(self.buffer),"enlaceRx,linha 29")
                 time.sleep(0.001)
 
     def threadStart(self):
@@ -96,3 +98,16 @@ class RX(object):
         """ Clear the reception buffer
         """
         self.buffer = b""
+
+
+    def getHead(self):
+        while(self.pay ==False):
+            eop = self.buffer.find(b'\xaf, \xfc, \x44, \xe7')
+            if (eop != -1):
+                print("enlaceRx,107" eop)
+                self.threadPause()
+                headpayload = self.buffer[:eop]
+                print("HEADPAYLOAD,enlaceRx,linha 109", headpayload)
+                self.buffer = self.buffer[eop+4:]
+                self.threadResume()
+                return headpayload

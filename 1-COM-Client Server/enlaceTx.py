@@ -1,5 +1,5 @@
 import time
-
+import binascii
 # Threads
 import threading
 
@@ -24,7 +24,7 @@ class TX(object):
         """
         while not self.threadStop:
             if(self.threadMutex):
-                print(self.buffer)
+                print(binascii.hexlify(self.buffer),"enlaceTx,linha 27")
                 self.transLen    = self.fisica.write(self.buffer)
                 self.threadMutex = False
 

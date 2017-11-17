@@ -7,10 +7,9 @@ import time
 #   para saber a sua porta, execute no terminal :
 #   python -m serial.tools.list_ports
 
-#serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
+serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
-#serialName = "COM3"                  # Windows(variacao de)
-serialName = "COM3"
+#serialName = "COM3"  
 
 def main():
     # Inicializa enlace
@@ -45,12 +44,12 @@ def main():
     while(com.tx.getIsBussy()):
         pass
 
+    fim = time.time()
     # Encerra comunicação
     print("-------------------------")
     print("Comunicação encerrada")
     print("-------------------------")
     com.disable()
-    fim = time.time()
     print("Tempo de transmissão: " + str(fim - inicio))
 
 if __name__ == "__main__":
