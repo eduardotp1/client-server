@@ -28,7 +28,7 @@ class RX(object):
                 rxTemp, nRx = self.fisica.read(self.READLEN)
                 if (nRx > 0):
                     self.buffer += rxTemp
-                print(binascii.hexlify(self.buffer),"enlaceRx,linha 29")
+                print(binascii.hexlify(self.buffer),"enlaceRx,linha 31")
                 time.sleep(0.001)
 
     def threadStart(self):
@@ -104,7 +104,7 @@ class RX(object):
         while(self.pay ==False):
             eop = self.buffer.find(b'\xaf, \xfc, \x44, \xe7')
             if (eop != -1):
-                print("enlaceRx,107" eop)
+                print("enlaceRx,107", eop)
                 self.threadPause()
                 headpayload = self.buffer[:eop]
                 print("HEADPAYLOAD,enlaceRx,linha 109", headpayload)

@@ -28,29 +28,30 @@ def main():
     print("-------------------------")
 
     # Carrega imagem
-    print ("Carregando imagem para transmissão :")
-    print (" - {}".format(imageR))
-    print("-------------------------")
-    txBuffer = open(imageR, 'rb').read()
-    txLen    = 3093
-    print(txLen)
+    if com.establishConnection():
+        print ("Carregando imagem para transmissão :")
+        print (" - {}".format(imageR))
+        print("-------------------------")
+        txBuffer = open(imageR, 'rb').read()
+        txLen    = 3093
+        print(txLen)
 
-    # Transmite imagem
-    print("Transmitindo .... {} bytes".format(txLen))
-    inicio = time.time()
-    com.sendData(txBuffer)
+        # Transmite imagem
+        print("Transmitindo .... {} bytes".format(txLen))
+        inicio = time.time()
+        com.sendData(txBuffer)
 
-    # espera o fim da transmissão
-    while(com.tx.getIsBussy()):
-        pass
+        # espera o fim da transmissão
+        while(com.tx.getIsBussy()):
+            pass
 
-    fim = time.time()
-    # Encerra comunicação
-    print("-------------------------")
-    print("Comunicação encerrada")
-    print("-------------------------")
-    com.disable()
-    print("Tempo de transmissão: " + str(fim - inicio))
+        fim = time.time()
+        # Encerra comunicação
+        print("-------------------------")
+        print("Comunicação encerrada")
+        print("-------------------------")
+        com.disable()
+        print("Tempo de transmissão: " + str(fim - inicio))
 
 if __name__ == "__main__":
     main()

@@ -73,6 +73,7 @@ class enlace(object):
 
 
     def waitConnection(self):
+        print("Preparing to receive image")
         while self.connected ==  False:
             response = self.getData()
             print("Waiting sync...")
@@ -91,8 +92,9 @@ class enlace(object):
 
         
     def establishConnection(self):
+        print("Preparing to send image")
         timeout = False
-        print("Waiting sync...")
+        print("Sending sync...")
         comeco = time.time()
         while self.connected ==  False:
             if timeout:
@@ -102,13 +104,14 @@ class enlace(object):
                 if self.rx.getIsEmpty() == False:
                     self.sendSync()
                     response = self.getData()
-                    if response[3] == "ACK" or "sync":
+                    if response[3] == "sync":
                         print("Sync received")
                         response = self.getData()
-                        if response[3] == "sync" or "ACK":
+                        if response[3] == "ACK":
                             print("ACK received")
                             time.sleep(0.5)
                             self.sendACK()
+                            print("Connection established")
                             return True
                     else:
                         return False      

@@ -33,35 +33,45 @@ def main():
 
     # Faz a recepção dos dados
     print ("Recebendo dados .... ")
-    #rxBuffer, nRx = com.getData(txLen)
-    temp1,tx = com.getData(1)
-    inicio=time.time()
-    temp2, nRx = com.getData(3092)
-
-    rxBuffer = temp1 + temp2
-
-    fim=time.time()
-    # log
-    print ("Lido              {} bytes ".format(nRx))
-
-    # Salva imagem recebida em arquivo
-    print("-------------------------")
-    print ("Salvando dados no arquivo :")
-    print (" - {}".format(imageW))
-    f = open(imageW, 'wb')
-    f.write(rxBuffer)
+    if com.waitConnection():
+        response = com.getData()
+        rxBuffer, nRx, real_nRx, package_type = response
+        inicio=time.time()
 
 
-    print("Tempo de recepção: {}".format(fim - inicio))
+        
+        lost_b=nRx - real_nRx
+        fim=time.time()
+        print ("Lido              {} bytes ".format(nRx))
 
-    # Fecha arquivo de imagem
-    f.close()
+        # Salva imagem recebida em arquivo
+        print("-------------------------")
+        print ("Salvando dados no arquivo :")
+        print (" - {}".format(imageW))
+        f = open(imageW, 'wb')
+        f.write(rxBuffer)
 
-    # Encerra comunicação
-    print("-------------------------")
-    print("Comunicação encerrada")
-    print("-------------------------")
-    com.disable()
+        # Fecha arquivo de imagem
+        f.close()
+
+        print("Tempo de recepção: {}".format(fim - inicio))
+
+    
+
+        # Encerra comunicação
+        print("-------------------------")
+        print("Comunicação encerrada")
+        print("-------------------------")
+        com.disable()
+        return "Received"
+
+    else:
+        return "Error"
+        f.close
+        print("-------------------------")
+        print("Comunicação encerrada")
+        print("-------------------------")
+        com.disable()
 
 if __name__ == "__main__":
     main()
