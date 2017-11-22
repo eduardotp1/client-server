@@ -102,8 +102,8 @@ class RX(object):
 
     def getHead(self):
         while(self.pay ==False):
-            eop = self.buffer.find(b'\xaf, \xfc, \x44, \xe7')
-            if (eop != -1):
+            eop = self.buffer.find(b'\xaf, \xfc, \xa4, \xe7')
+            if (eop == -1):
                 print("enlaceRx,107", eop)
                 self.threadPause()
                 headpayload = self.buffer[:eop]

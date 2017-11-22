@@ -23,7 +23,7 @@ class Pacote (object):
             self.dataLen = len(data)
         
         self.head  = 0xD7
-        self.eop = bytearray([0xAF, 0xFC, 0x44, 0xE7])
+        self.eop = bytearray([0xaf, 0xfc, 0xa4, 0xe7])
         self.headStruct = Struct("start" / Int8ub, "size"  / Int16ub, "type" / Int8ub )
                             
         
@@ -41,8 +41,10 @@ class Pacote (object):
 
 # # Desempacota os dados
 def desempacota(package):
-    size = int(binascii.hexlify(package[1:3]), 16) 
-    type_package = package[3:4]
+    size = binascii.hexlify(package[1:3])
+    print(package[3])
+    print("zoide")
+    type_package = package[3]
 
     if type_package == b'\x00':
         type_package = "data"

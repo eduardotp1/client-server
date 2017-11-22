@@ -59,15 +59,15 @@ class enlace(object):
         return(data[0], data[1],(len(data[0])),data[2])
 
     def sendACK(self):
-        package = Package(None,"ACK").buildPackage()
+        package = Pacote(None,"ACK").empacota()
         self.tx.sendBuffer(package)
     
     def sendNACK(self):
-        package = Package(None,"NACK").buildPackage()
+        package = Pacote(None,"NACK").empacota()
         self.tx.sendBuffer(package)
     
     def sendSync(self):
-        package = Package(None,"sync").buildPackage()
+        package = Pacote(None,"sync").empacota()
         self.tx.sendBuffer(package)
 
 
@@ -75,7 +75,7 @@ class enlace(object):
     def waitConnection(self):
         print("Preparing to receive image")
         while self.connected ==  False:
-            response = self.getData()
+            response = self.getData(self)
             print("Waiting sync...")
             if response[3] == "sync":
                 print("Sync received")
@@ -83,7 +83,7 @@ class enlace(object):
                 time.sleep(0.5)
                 self.sendACK()
                 print("ACK SENT")
-                response = self.getData()
+                response = self.getData(self)
                 if response[3] == "ACK":
                     print("Ready to receive package")
                     return True
@@ -103,8 +103,10 @@ class enlace(object):
                 print("--Waiting sync...")
                 if self.rx.getIsEmpty() == False:
                     self.sendSync()
+                    print("oi1")
                     response = self.getData()
                     if response[3] == "sync":
+                        print("oi2")
                         print("Sync received")
                         response = self.getData()
                         if response[3] == "ACK":
