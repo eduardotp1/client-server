@@ -28,7 +28,7 @@ class RX(object):
                 rxTemp, nRx = self.fisica.read(self.READLEN)
                 if (nRx > 0):
                     self.buffer += rxTemp
-                print(binascii.hexlify(self.buffer),"enlaceRx,linha 31")
+                #print(binascii.hexlify(self.buffer),"enlaceRx,linha 31")
                 time.sleep(0.001)
 
     def threadStart(self):
@@ -100,7 +100,7 @@ class RX(object):
         self.buffer = b""
 
 
-    def getHead(self):
+    def getHeadPayload(self):
         while(self.pay ==False):
             eop = self.buffer.find(bytearray([0xaf, 0xfc, 0xa4, 0xe7]))
             if (eop != -1):

@@ -46,60 +46,66 @@ class enlace(object):
     def sendData(self, data):
         """ Send data over the enlace interface
         """
+        print("ENVIANDO DATA")
         data = Pacote(data, "data").empacota()
         self.tx.sendBuffer(data)
+        print("***ENVIANDO DATA***")
 
-    def getData(self, size):
+    def getData(self):
         """ Get n data over the enlace interface
         Return the byte array and the size of the buffer
         """
-        package = self.rx.getHead()
-        print(package, "enlace,57")
+        package = self.rx.getHeadPayload()
+        print(binascii.hexlify(package),"getData","linha 57")
         data = desempacota(package)
+        print("***RECEBENDO DATA***")
         return(data[0], data[1],(len(data[0])),data[2])
 
     def sendACK(self):
         package = Pacote(None,"ACK").empacota()
+        print("***ENVIANDO ACK***")
         self.tx.sendBuffer(package)
     
     def sendNACK(self):
         package = Pacote(None,"NACK").empacota()
+        print("***ENVIANDO NACK***")
         self.tx.sendBuffer(package)
     
     def sendSync(self):
         package = Pacote(None,"sync").empacota()
         self.tx.sendBuffer(package)
-
-
+        print("***ENVIANDO SYNC***")
 
     def waitConnection(self):
         print("Preparing to receive image")
         while self.connected ==  False:
-            response = self.getData(self)
+            response = self.getData()
             print("Waiting sync...")
             if response[3] == "sync":
                 print("Sync received")
                 self.sendSync()
-                time.sleep(0.5)
+                print("***ENVIOU SYNC***")
+                time.sleep(3)
                 self.sendACK()
-                time.sleep(0.5)
+                time.sleep(3)
                 print("ACK SENT")
-                response = self.getData(self)
-                time.sleep(0.5)
+                response = self.getData()
+                time.sleep(3)
                 print("Waiting ACK..")
                 if response[3] == "ACK" or "sync":
+                    print("***RECEBEU ACK OU SYNC***")
                     print("Ready to receive package")
                     return True
             else:
-                print("oi")
+                print("***NÃO RECEBEU SYNC INICIAL***")
                 return False
 
-        
     def establishConnection(self):
         print("Preparing to send image")
         timeout = False
         print("Sending sync...")
         comeco = time.time()
+
         while self.connected ==  False:
             if timeout:
                 timeout=False
@@ -107,22 +113,27 @@ class enlace(object):
                 print("--Waiting sync...")
                 if self.rx.getIsEmpty() == False:
                     self.sendSync()
-                    response = self.getData(self)
+                    time.sleep(2)
+                    print("***ENVIOU SYNC***")
+                    response = self.getData()
                     if response[3] == "sync":
                         print("Sync received")
-                        response = self.getData(self)
+                        response = self.getData()
                         print("Waiting ACK..")
                         if response[3] == "ACK":
                             print("ACK received")
-                            time.sleep(0.5)
+                            time.sleep(3)
                             self.sendACK()
+                            print("***ENVIOU ACK***")
                             print("Connection established")
                             return True
                     else:
+                        print("***NÃO RECEBEU SYNC INICIAL***")
                         return False      
             else:
                 if ((time.time() - comeco) > 6):
                     print ("Passou 6 s")
                     self.sendSync()
+                    print("***ENVIOU SYNC timeout***")
                     timeout = True
                     

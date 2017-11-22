@@ -6,7 +6,7 @@ import time
 #   para saber a sua porta, execute no terminal :
 #   python -m serial.tools.list_ports
 
-serialName = "/dev/ttyACM5"           # Ubuntu (variacao de)
+serialName = "/dev/ttyACM2"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
 #serialName = "COM0"                   # Windows(variacao de)
 
@@ -34,32 +34,23 @@ def main():
     # Faz a recepção dos dados
     print ("Recebendo dados .... ")
     if com.waitConnection():
+        time.sleep(12)
         response = com.getData()
         rxBuffer, nRx, real_nRx, package_type = response
         inicio=time.time()
-
-
+        print("Data recebidaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:")
+        print(rxBuffer)
         
-        lost_b=nRx - real_nRx
+        lost_b= int(nRx) - int(real_nRx)
         fim=time.time()
-        print ("Lido              {} bytes ".format(nRx))
+        print ("Lido              {} bytes ".format(int(nRx)))
 
         # Salva imagem recebida em arquivo
         print("-------------------------")
         print ("Salvando dados no arquivo :")
         print (" - {}".format(imageW))
         f = open(imageW, 'wb')
-        f.write(rxBuffer)
-
-        # Fecha arquivo de imagem
-        f.close()
-
-        print("Tempo de recepção: {}".format(fim - inicio))
-
-    
-
-        # Encerra comunicação
-        print("-------------------------")
+        f.write(rxBuffer)            # Fecha arquivo de imagem            f.close()            print("Tempo de recepção: {}".format(fim - inicio))                   # Encerra comunicação              print("-------------------------")
         print("Comunicação encerrada")
         print("-------------------------")
         com.disable()
@@ -67,7 +58,7 @@ def main():
 
     else:
         return "Error"
-        f.close
+        f.close()
         print("-------------------------")
         print("Comunicação encerrada")
         print("-------------------------")

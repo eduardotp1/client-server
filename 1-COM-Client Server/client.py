@@ -7,7 +7,7 @@ import time
 #   para saber a sua porta, execute no terminal :
 #   python -m serial.tools.list_ports
 
-serialName = "/dev/ttyACM4"           # Ubuntu (variacao de)
+serialName = "/dev/ttyACM3"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
 #serialName = "COM3"  
 
@@ -29,20 +29,20 @@ def main():
 
     # Carrega imagem
     if com.establishConnection():
-        print ("Carregando imagem para transmissão :")
+        #print ("Carregando imagem para transmissão :")
         print (" - {}".format(imageR))
         print("-------------------------")
         txBuffer = open(imageR, 'rb').read()
-        txLen    = 3093
+        txLen    = len(txBuffer)
         print(txLen)
 
-        # Transmite imagem
-        time.sleep(0.5)
+        ## Transmite imagem
+        time.sleep(3)
         print("Transmitindo .... {} bytes".format(txLen))
         inicio = time.time()
         com.sendData(txBuffer)
-
-        # espera o fim da transmissão
+        
+        ## espera o fim da transmissão
         while(com.tx.getIsBussy()):
             pass
 
