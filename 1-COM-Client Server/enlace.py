@@ -82,12 +82,16 @@ class enlace(object):
                 self.sendSync()
                 time.sleep(0.5)
                 self.sendACK()
+                time.sleep(0.5)
                 print("ACK SENT")
                 response = self.getData(self)
-                if response[3] == "ACK":
+                time.sleep(0.5)
+                print("Waiting ACK..")
+                if response[3] == "ACK" or "sync":
                     print("Ready to receive package")
                     return True
             else:
+                print("oi")
                 return False
 
         
@@ -107,6 +111,7 @@ class enlace(object):
                     if response[3] == "sync":
                         print("Sync received")
                         response = self.getData(self)
+                        print("Waiting ACK..")
                         if response[3] == "ACK":
                             print("ACK received")
                             time.sleep(0.5)
@@ -116,8 +121,8 @@ class enlace(object):
                     else:
                         return False      
             else:
-                if ((time.time() - comeco) > 5):
-                    print ("Passou 5 s")
+                if ((time.time() - comeco) > 6):
+                    print ("Passou 6 s")
                     self.sendSync()
                     timeout = True
                     
