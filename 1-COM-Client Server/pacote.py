@@ -42,8 +42,6 @@ class Pacote (object):
 # # Desempacota os dados
 def desempacota(package):
     size = binascii.hexlify(package[1:3])
-    print(package[3])
-    print("zoide")
     type_package = package[3]
 
     if type_package == b'\x00':

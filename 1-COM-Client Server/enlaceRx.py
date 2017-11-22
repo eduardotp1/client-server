@@ -102,12 +102,10 @@ class RX(object):
 
     def getHead(self):
         while(self.pay ==False):
-            eop = self.buffer.find(b'\xaf, \xfc, \xa4, \xe7')
-            if (eop == -1):
-                print("enlaceRx,107", eop)
+            eop = self.buffer.find(bytearray([0xaf, 0xfc, 0xa4, 0xe7]))
+            if (eop != -1):
                 self.threadPause()
                 headpayload = self.buffer[:eop]
-                print("HEADPAYLOAD,enlaceRx,linha 109", headpayload)
                 self.buffer = self.buffer[eop+4:]
                 self.threadResume()
                 return headpayload

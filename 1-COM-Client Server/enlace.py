@@ -103,12 +103,10 @@ class enlace(object):
                 print("--Waiting sync...")
                 if self.rx.getIsEmpty() == False:
                     self.sendSync()
-                    print("oi1")
-                    response = self.getData()
+                    response = self.getData(self)
                     if response[3] == "sync":
-                        print("oi2")
                         print("Sync received")
-                        response = self.getData()
+                        response = self.getData(self)
                         if response[3] == "ACK":
                             print("ACK received")
                             time.sleep(0.5)
@@ -118,8 +116,8 @@ class enlace(object):
                     else:
                         return False      
             else:
-                if ((time.time() - comeco) > 3):
-                    print ("Passou 3 s")
+                if ((time.time() - comeco) > 5):
+                    print ("Passou 5 s")
                     self.sendSync()
                     timeout = True
                     
