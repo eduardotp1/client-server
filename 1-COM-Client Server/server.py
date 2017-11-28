@@ -6,8 +6,8 @@ import time
 #   para saber a sua porta, execute no terminal :
 #   python -m serial.tools.list_ports
 
-serialName = "/dev/ttyACM2"           # Ubuntu (variacao de)
-#serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
+serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
+#serialName = "/dev/cu.usbmodem1451" # Mac    (variacao de)
 #serialName = "COM0"                   # Windows(variacao de)
 
 def main():
@@ -37,13 +37,17 @@ def main():
         time.sleep(12)
         response = com.getData()
         rxBuffer, nRx, real_nRx, package_type = response
+        while package_type !="data":
+            response = com.getData()
+            rxBuffer, nRx, real_nRx, package_type = response
         inicio=time.time()
-        print("Data recebidaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:")
+        print("Data received")
         print(rxBuffer)
         
-        lost_b= int(nRx) - int(real_nRx)
+        
+        # lost_b= int(nRx) - int(real_nRx)
         fim=time.time()
-        print ("Lido              {} bytes ".format(int(nRx)))
+        # print ("Lido {} bytes ".format(int(nRx)))
 
         # Salva imagem recebida em arquivo
         print("-------------------------")
