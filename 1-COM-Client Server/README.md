@@ -10,7 +10,7 @@ Datagrama é um processo de empacotamento dos dados a serem transmitidos numa co
 
 Quando, em um streaming de dados, um byte é perdido, o receptor ao pegar os dados, pode acabar misturando de forma equivocada bytes do próximo pacote, no pacote atual, já que este possui um byte a menos. Isso faz com que os dados sejam recebidos errados, e sem um mecanismo de detecção dessas falhas, a comunicação/envio dos dados precisaria ser reiniciado muito tempo depois.
 
-![Errodecomunicacao](doc/erro.png){ width=100% }
+![Errodecomunicacao](doc/Streaming.png){ width=100% }
 
 Para detectar esse tipo de falha, cria-se um "pacote" com o dado que se deseja enviar, onde há bytes de controle que informam qual o início do pacote, ao tamanho desse pacote, e o fim do mesmo. Assim, ao receber um pacote, o receptor pode conferir se ele começa e termina como deveria, e se esse pacote tem o tamanho que deveria ter. Dessa forma, ambos os pontos tem mais confiança de que o dado recebido é o mesmo que o enviado.
 
@@ -18,7 +18,7 @@ Para detectar esse tipo de falha, cria-se um "pacote" com o dado que se deseja e
 
 Para essa implementação, foi adicionado um 'HEAD' (cabeçalho) no começo dos dados que se quer enviar (payload). Esse HEAD é composte de um ou mais bytes de início de pacote e o tamanho que esse pacote possui. Ao final desse pacote que já contém Head e payload, é adicionado um EOP (End of packet, ou fim de pacote) para informar que esses são os bytes finais do pacote.
 
-![Datagrama](doc/datagrama.png){ width=100% }
+![Datagrama](doc/Datagrama.png){ width=100% }
 
 ## Comunicação
 
@@ -34,9 +34,9 @@ Esse pacote é enviado ao receptor e, após ser recebido, para ele ser desempaco
  ## HandShake 3-Way Ack/Nack
 Para se certificar de que o server está preparado para receber o pacote, o client envia um pacote tipo "SYN" ao server, indicando que está pronto para fazer uma sincronia. Nesse momento o client passa a esperar por uma resposta do server. Se o server receber essa solicitação e estiver pronto para estabelecer conexão, ele envia uma resposta positiva "ACK" para o client. Instantes após o envio do "ACK" pelo server, o mesmo envia também um pacote de sincronismo "SYN" para conferir se o client recebeu sua resposta anterior e garantir que ele está preparado para continuar a comunicação e passa a esperar uma resposta "ACK" do client. Se essa resposta do server não for recebida pelo client, existe um tempo limite, o 'timeout', que o client espera por uma resposta, e caso ela não chegue ele reenvia o "SYN". Se a mensagem positiva "ACK" do server for recebida pelo client antes do 'timeout' acabar, ele espera pelo "SYN" do server até ele chegar. Ao receber, ele responde com um "ACK" e, apenas após esse procedimento o pacote pode ser enviado. 
 
-![HandShake](doc/handshakeetimeout.png){ width=100% }
+![HandShake](doc/handshake.png){ width=100% }
 
 Para garantir o efetivo recebimento do pacote pelo server, um mecanismo que confere os dados recebidos e comunica o sucesso ou falha na recepção deste ao client também foi implementado.
 Logo após o envio do pacote de dados, o client passa a esperar uma resposta positiva "ACK" ou negativa "NACK" do server referente ao status do recebimento do pacote. Se o pacote veio nas condições esperadas, o server envia um "ACK" confirmando o sucesso na transmissão e salva os dados. Ao receber esse "ACK", o client finaliza a comunicação. Caso o pacote recebido pelo server estiver corrompido, uma resposta negativa "NACK" é enviada, e ao recebe-la, o client reenvia o pacote e o mesmo é conferido da mesma forma pelo server, após a recepção.
 
-![HandShakeGarantia](doc/handshakegarantia.png){ width=100% }
+![HandShakeGarantia](doc/confirmacao.png){ width=100% }
